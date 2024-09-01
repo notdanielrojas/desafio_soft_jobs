@@ -1,17 +1,17 @@
-const jwt = require("jsonwebtoken");
+const { verifyDecodeToken } = require("../utils/token.utils");
 
 const authMiddleware = (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
-  if (!token) {
-    return res.status(401).json({ error: "No token provided" });
-  }
+  const authorizationHeader = req.headers.authorization;
+
   try {
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = payload;
+    const email = verifyDecodeToken(authorizationHeader);
+    req.user = { email };
     next();
   } catch (error) {
-    console.log(error);
-    return res.status(401).send({ error: "Invalid token" });
+    console.log("Middleware error:", error);
+    return res
+      .status(error.code || 401)
+      .json({ error: error.message || "Token inválido" });
   }
 };
 

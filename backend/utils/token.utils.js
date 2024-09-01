@@ -1,11 +1,16 @@
-/* const jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 const verifyDecodeToken = (authorizationHeader) => {
-  if (!authorizationHeader) {
+  if (typeof authorizationHeader !== "string") {
     throw { code: 401, message: "No token provided" };
   }
 
-  const token = authorizationHeader.split(" ")[1];
+  const parts = authorizationHeader.split(" ");
+  if (parts.length !== 2 || parts[0] !== "Bearer") {
+    throw { code: 401, message: "Invalid token format" };
+  }
+
+  const token = parts[1];
   if (!token) {
     throw { code: 401, message: "Invalid token" };
   }
@@ -23,4 +28,3 @@ const verifyDecodeToken = (authorizationHeader) => {
 };
 
 module.exports = { verifyDecodeToken };
- */
