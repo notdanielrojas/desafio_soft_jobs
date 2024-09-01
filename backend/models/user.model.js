@@ -8,21 +8,21 @@ const getUserByEmail = async (email) => {
     const { rows } = await pool.query(query, values);
 
     if (rows.length === 0) {
-      throw { code: 404, message: "Usuario no encontrado" };
+      throw { code: 404, message: "User not found" };
     }
 
     return rows[0];
   } catch (error) {
     throw {
       code: error.code || 500,
-      message: error.message || "Error al obtener el usuario",
+      message: error.message || "Error retrieving user",
     };
   }
 };
 
 const getUserById = async (id) => {
   const result = await pool.query("SELECT * FROM usuarios WHERE id = $1", [id]);
-  
+
   return result.rows[0];
 };
 

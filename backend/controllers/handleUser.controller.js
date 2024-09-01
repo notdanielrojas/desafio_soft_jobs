@@ -1,13 +1,15 @@
 const { registerUser, getUserByEmail } = require("../models/user.model");
+const { handleErrors } = require("../controllers/handleCodes.controller");
 
 const handleRegisterUser = async (req, res) => {
   try {
     const user = req.body;
     await registerUser(user);
-    res.send("User register successfully");
+    res.status(201).send("User registered successfully");
   } catch (error) {
     console.log(error);
-    res.status(error.code || 500).send(error.message || "Server error");
+    const errorResponse = handleErrors(error.code || "500");
+    res.status(errorResponse.status).send(errorResponse.message);
   }
 };
 
@@ -18,11 +20,12 @@ const handleGetUser = async (req, res) => {
     if (user) {
       res.status(200).json([user]);
     } else {
-      res.status(404).json({ message: "User not find" });
+      res.status(404).json({ message: "User not found" });
     }
   } catch (error) {
     console.error("Error fetching user:", error.message);
-    res.status(500).json({ message: "Error fetching user" });
+    const errorResponse = handleErrors(error.code || "500");
+    res.status(errorResponse.status).send(errorResponse.message);
   }
 };
 
