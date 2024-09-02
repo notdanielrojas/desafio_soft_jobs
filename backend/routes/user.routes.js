@@ -1,13 +1,16 @@
-const { handleErrors } = require("../controllers/handleCodes.controller");
+const { handleErrors } = require("../utils/codes.utils");
 const {
   handleRegisterUser,
   handleGetUser,
 } = require("../controllers/handleUser.controller");
 const { authMiddleware } = require("../middlewares/auth.middleware");
 const { Router } = require("express");
+const {
+  validateCredentialsAtRegister,
+} = require("../middlewares/validate.middleware");
 const router = Router();
 
-router.post("/", async (req, res) => {
+router.post("/", validateCredentialsAtRegister, async (req, res) => {
   try {
     await handleRegisterUser(req, res);
   } catch (error) {

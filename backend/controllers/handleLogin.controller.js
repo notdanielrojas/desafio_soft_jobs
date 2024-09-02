@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { verifyCredentials } = require("../models/login.model");
-const { handleErrors } = require("../controllers/handleCodes.controller");
+const { handleErrors, handleSuccess } = require("../utils/codes.utils");
 
 const handleCredentials = async (req, res) => {
   try {
@@ -9,11 +9,15 @@ const handleCredentials = async (req, res) => {
     const token = jwt.sign({ email }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-    res.status(200).json({ token });
+    const successResponse = handleSuccess(200);
+    res.status(successResponse.status).json({
+      message: successResponse.message,
+      token,
+    });
   } catch (error) {
-    console.log(error);
-    const errorResponse = handleErrors(error.code || "500");
-    res.status(errorResponse.status).send(errorResponse.message);
+    console.error("Error during credentials verification:", error.message);
+    const errorResponse = handleErrors("401");
+    res.status(errorResponse.status).json({ error: errorResponse.message });
   }
 };
 

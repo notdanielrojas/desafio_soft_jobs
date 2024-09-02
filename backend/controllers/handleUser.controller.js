@@ -1,15 +1,18 @@
 const { registerUser, getUserByEmail } = require("../models/user.model");
-const { handleErrors } = require("../controllers/handleCodes.controller");
+const { handleErrors, handleSuccess } = require("../utils/codes.utils");
 
 const handleRegisterUser = async (req, res) => {
   try {
     const user = req.body;
     await registerUser(user);
-    res.status(201).send("User registered successfully");
+    const successResponse = handleSuccess(201);
+    res
+      .status(successResponse.status)
+      .json({ message: successResponse.message, user });
   } catch (error) {
-    console.log(error);
+    console.error("Error registering user:", error.message);
     const errorResponse = handleErrors(error.code || "500");
-    res.status(errorResponse.status).send(errorResponse.message);
+    res.status(errorResponse.status).json({ message: errorResponse.message });
   }
 };
 
@@ -18,13 +21,15 @@ const handleGetUser = async (req, res) => {
   try {
     const user = await getUserByEmail(userEmail);
     if (user) {
-      res.status(200).json([user]);
+      const successResponse = handleSuccess(200);
+      res.status(successResponse.status).json([user]);
     } else {
-      res.status(404).json({ message: "User not found" });
+      const errorResponse = handleErrors("404");
+      res.status(errorResponse.status).send(errorResponse.message);
     }
   } catch (error) {
     console.error("Error fetching user:", error.message);
-    const errorResponse = handleErrors(error.code || "500");
+    const errorResponse = handleErrors("500");
     res.status(errorResponse.status).send(errorResponse.message);
   }
 };
