@@ -31,6 +31,7 @@ El proyecto está estructurado de la siguiente manera:
 
   - `authMiddleware.js`: Middleware para verificar la existencia y validez del token JWT.
   - `logger.middleware.js`: Middleware para registrar las consultas y errores en el servidor.
+  - `validate.middleware.js`: Middleware para validar los datos de entrada en las rutas de registro y autentificación de usuarios.
 
 - **routes/**: Contiene las rutas del servidor.
 
@@ -39,6 +40,7 @@ El proyecto está estructurado de la siguiente manera:
 
 - **utils/**: Contiene utilidades y funciones auxiliares.
 
+  - `codes.utils.js`: Funciones para manejar códigos de éxito y error.
   - `token.utils.js`: Funciones para la verificación y decodificación de tokens JWT.
 
 - **.env**: Archivo de configuración para variables de entorno, incluyendo el secreto para firmar los tokens JWT.
